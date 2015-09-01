@@ -1,5 +1,6 @@
 library(TCGA-Assembler)
 library(reshape2)
+library(ggplot2)
 
 # install TCGA-Assembler and use Module_A & Module_B
 setwd("TCGA-Assembler")
@@ -105,3 +106,17 @@ resultList <- processRNASeqV2Data(TCGA.annot,hg19.ensembl.lincs,RNASeqV2RawData.
 t.test.res <- resultList$dat
 # coordinates in bed file format
 tcga.lincs.sig.005.coord <- resultList$tcga.lincs.sig.005.coord
+
+# if you are interested in some lncRNAs, then you can see if they are differentially expressed or not
+# if yes, you can make a plot of their expression like below
+# Tip: you can also make plots of expression for overlapping lincRNAs between human & mouse
+# dat.sub is a subset of dat (only interesting lncRNAs)
+ggplot(dat.sub,aes(x=treat,y=log2(value+1),fill=treat)) + geom_boxplot(show_guide=F) + 
+  facet_wrap(~label,ncol=4) + ylab("log2(Expression)\n") + 
+  ggtitle("TCGA: Human Thyroid carcinoma \n Boxplot of Differentially Expressed lincRNAs\n") +
+  theme(axis.text.x=element_text(size=14,color="black"),
+        axis.text.y=element_text(size=14,color="black"),
+        strip.text=element_text(size=14,color="black"),
+        axis.title.x=element_blank(),
+        axis.title.y=element_text(size=14,color="black"),
+        plot.title=element_text(size=16,color="black"))
